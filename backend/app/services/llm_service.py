@@ -158,9 +158,13 @@ def _call_openai(prompt: str) -> Optional[dict]:
     # Make an OpenAI API call and parse the JSON response
     import openai
 
+    model = settings.llm_model
+    if not model or model.startswith("claude"):
+        model = "gpt-4o-mini"
+
     client = openai.OpenAI(api_key=settings.openai_api_key)
     response = client.chat.completions.create(
-        model=settings.llm_model,
+        model=model,
         messages=[{"role": "user", "content": prompt}],
         temperature=0.3,
         max_tokens=2000,
@@ -174,9 +178,13 @@ def _call_anthropic(prompt: str) -> Optional[dict]:
     # Make an Anthropic API call and parse the JSON response
     import anthropic
 
+    model = settings.llm_model
+    if not model or model.startswith("gpt"):
+        model = "claude-3-5-sonnet-20241022"
+
     client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
     response = client.messages.create(
-        model=settings.llm_model,
+        model=model,
         max_tokens=2000,
         messages=[{"role": "user", "content": prompt}],
     )
@@ -188,9 +196,13 @@ def _call_openai_text(prompt: str) -> str:
     # Make an OpenAI API call returning raw text
     import openai
 
+    model = settings.llm_model
+    if not model or model.startswith("claude"):
+        model = "gpt-4o-mini"
+
     client = openai.OpenAI(api_key=settings.openai_api_key)
     response = client.chat.completions.create(
-        model=settings.llm_model,
+        model=model,
         messages=[{"role": "user", "content": prompt}],
         temperature=0.5,
         max_tokens=1000,
@@ -203,9 +215,13 @@ def _call_anthropic_text(prompt: str) -> str:
     # Make an Anthropic API call returning raw text
     import anthropic
 
+    model = settings.llm_model
+    if not model or model.startswith("gpt"):
+        model = "claude-3-5-sonnet-20241022"
+
     client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
     response = client.messages.create(
-        model=settings.llm_model,
+        model=model,
         max_tokens=1000,
         messages=[{"role": "user", "content": prompt}],
     )
