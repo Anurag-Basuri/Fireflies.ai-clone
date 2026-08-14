@@ -6,10 +6,10 @@ class Settings(BaseSettings):
     # Database
     database_url: str = "sqlite:///./fireflies.db"
 
-    # LLM Configuration (Google Gemini)
+    # LLM Configuration (Google Gemini - 1,500 Requests/Day Free Tier)
     llm_provider: str = "gemini"
     gemini_api_key: Optional[str] = None
-    llm_model: str = "gemini-flash-latest"
+    llm_model: str = "gemini-flash-lite-latest"
     llm_base_url: Optional[str] = "https://generativelanguage.googleapis.com/v1beta/openai/"
 
     # CORS
