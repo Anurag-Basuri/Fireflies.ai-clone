@@ -87,9 +87,9 @@ export function AskAIPanel({ meetingId }: AskAIPanelProps) {
 	];
 
 	return (
-		<div className="flex flex-col h-full rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] shadow-sm overflow-hidden">
+		<div className="flex flex-col h-full rounded-2xl border border-(--border-color) bg-(--bg-card) shadow-sm overflow-hidden">
 			{/* Header */}
-			<div className="flex items-center gap-3 border-b border-[var(--border-color)]/60 p-4 bg-[var(--bg-secondary)]/50">
+			<div className="flex items-center gap-3 border-b border-(--border-color)/60 p-4 bg-(--bg-secondary)/50">
 				<div
 					className="flex h-9 w-9 items-center justify-center rounded-xl text-white shadow-sm"
 					style={{ background: 'var(--brand-gradient)' }}
@@ -97,13 +97,13 @@ export function AskAIPanel({ meetingId }: AskAIPanelProps) {
 					<Bot className="h-5 w-5" />
 				</div>
 				<div>
-					<h4 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+					<h4 className="text-sm font-bold text-(--text-primary) flex items-center gap-2">
 						AskFred
 						<span className="rounded-full bg-purple-500/10 px-2 py-0.5 text-[10px] font-semibold text-purple-600 dark:text-purple-400 border border-purple-500/20">
 							AI Assistant
 						</span>
 					</h4>
-					<p className="text-xs text-[var(--text-muted)] mt-0.5">
+					<p className="text-xs text-(--text-muted) mt-0.5">
 						Answers questions using this meeting's transcript
 					</p>
 				</div>
@@ -121,8 +121,8 @@ export function AskAIPanel({ meetingId }: AskAIPanelProps) {
 						<div
 							className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
 								msg.role === 'user'
-									? 'bg-[var(--brand-primary)] text-white shadow-sm'
-									: 'bg-[var(--bg-tertiary)] text-[var(--brand-primary)] border border-[var(--border-color)]'
+									? 'bg-(--brand-primary) text-white shadow-sm'
+									: 'bg-(--bg-tertiary) text-(--brand-primary) border border-(--border-color)'
 							}`}
 						>
 							{msg.role === 'user' ? (
@@ -135,8 +135,8 @@ export function AskAIPanel({ meetingId }: AskAIPanelProps) {
 						<div
 							className={`max-w-[85%] rounded-2xl p-3.5 text-sm leading-relaxed shadow-sm ${
 								msg.role === 'user'
-									? 'bg-[var(--brand-primary)] text-white rounded-tr-sm'
-									: 'bg-[var(--bg-secondary)] text-[var(--text-primary)] border border-[var(--border-color)]/60 rounded-tl-sm'
+									? 'bg-(--brand-primary) text-white rounded-tr-sm'
+									: 'bg-(--bg-secondary) text-(--text-primary) border border-(--border-color)/60 rounded-tl-sm'
 							}`}
 						>
 							<p>{msg.content}</p>
@@ -144,7 +144,7 @@ export function AskAIPanel({ meetingId }: AskAIPanelProps) {
 								className={`block text-[10px] mt-2 text-right opacity-70 ${
 									msg.role === 'user'
 										? 'text-white'
-										: 'text-[var(--text-muted)]'
+										: 'text-(--text-muted)'
 								}`}
 							>
 								{msg.timestamp}
@@ -155,7 +155,7 @@ export function AskAIPanel({ meetingId }: AskAIPanelProps) {
 
 				{isLoading && (
 					<div className="flex items-start gap-3">
-						<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--bg-tertiary)] text-[var(--brand-primary)] border border-[var(--border-color)]">
+						<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--bg-tertiary)] text-[var(--brand-primary)] border border-(--border-color)">
 							<Loader2 className="h-4 w-4 animate-spin" />
 						</div>
 						<div className="rounded-2xl rounded-tl-sm bg-[var(--bg-secondary)] border border-[var(--border-color)]/60 p-3.5 text-sm text-[var(--text-muted)] shadow-sm">
