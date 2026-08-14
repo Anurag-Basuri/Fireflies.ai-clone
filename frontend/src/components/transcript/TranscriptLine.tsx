@@ -29,7 +29,7 @@ export function TranscriptLine({
 }: TranscriptLineProps) {
 	const [copied, setCopied] = React.useState(false);
 	const speakerName = segment.speaker_label || 'Speaker';
-	const speakerColor = segment.speaker_color || '#5B4DFB';
+	const speakerColor = segment.speaker_color || '#6c4cf4';
 
 	// Copy transcript line to clipboard
 	const handleCopy = (e: React.MouseEvent) => {
@@ -78,15 +78,15 @@ export function TranscriptLine({
 		<div
 			id={`segment-${segment.id}`}
 			onClick={() => onSeek(segment.start_time)}
-			className={`group relative flex items-start gap-3.5 rounded-2xl p-3.5 transition-all duration-150 cursor-pointer ${
+			className={`group relative flex items-start gap-3.5 rounded-xl p-3.5 transition-all duration-150 cursor-pointer ${
 				isActive
-					? 'transcript-active shadow-2xs'
-					: 'hover:bg-[var(--bg-secondary)]'
+					? 'transcript-active shadow-sm'
+					: 'hover:bg-[var(--bg-hover)]'
 			}`}
 		>
 			{/* Speaker Avatar Badge */}
 			<div
-				className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white shadow-2xs mt-0.5"
+				className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white shadow-sm mt-0.5"
 				style={{ backgroundColor: speakerColor }}
 			>
 				{getInitials(speakerName)}
@@ -96,31 +96,31 @@ export function TranscriptLine({
 			<div className="flex-1 min-w-0">
 				{/* Speaker name, timestamp, and active pill */}
 				<div className="flex items-center gap-2">
-					<span className="text-xs font-semibold text-[var(--text-primary)]">
+					<span className="text-sm font-semibold text-[var(--text-primary)]">
 						{speakerName}
 					</span>
-					<span className="text-[11px] font-mono text-[var(--text-muted)] bg-[var(--bg-tertiary)] px-1.5 py-0.5 rounded-md">
+					<span className="text-xs font-mono text-[var(--text-muted)] bg-[var(--bg-tertiary)] px-1.5 py-0.5 rounded-md tabular-nums">
 						{formatTime(segment.start_time)}
 					</span>
 					{isActive && (
-						<span className="flex items-center gap-1 rounded-full bg-[var(--brand-primary)]/10 px-2 py-0.5 text-[10px] font-semibold text-[var(--brand-primary)] animate-in fade-in duration-200">
+						<span className="flex items-center gap-1 rounded-full bg-[var(--brand-primary)]/10 px-2 py-0.5 text-[10px] font-semibold text-[var(--brand-primary)]">
 							<Play className="h-2.5 w-2.5 fill-current" />
-							Playing
+							Now Playing
 						</span>
 					)}
 				</div>
 
-				{/* Spoken Text with crisp line height */}
-				<p className="mt-1.5 text-xs text-[var(--text-secondary)] leading-relaxed font-normal">
+				{/* Spoken Text */}
+				<p className="mt-1.5 text-sm text-[var(--text-secondary)] leading-relaxed">
 					{renderContent()}
 				</p>
 			</div>
 
 			{/* Hover Action Bar */}
-			<div className="opacity-0 group-hover:opacity-100 flex items-center gap-0.5 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-1 shadow-md transition-opacity shrink-0">
+			<div className="opacity-0 group-hover:opacity-100 flex items-center gap-0.5 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-1 shadow-lg transition-all shrink-0">
 				<button
 					onClick={handleCopy}
-					className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] transition-colors"
+					className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)] transition-colors"
 					title="Copy quote"
 				>
 					{copied ? (
@@ -134,7 +134,7 @@ export function TranscriptLine({
 						e.stopPropagation();
 						onAddComment(segment.id);
 					}}
-					className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-secondary)] hover:text-[var(--brand-primary)] transition-colors"
+					className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--brand-primary)] transition-colors"
 					title="Pin comment on segment"
 				>
 					<MessageSquare className="h-3.5 w-3.5" />
@@ -144,7 +144,7 @@ export function TranscriptLine({
 						e.stopPropagation();
 						onCreateSoundbite(segment);
 					}}
-					className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-secondary)] hover:text-purple-500 transition-colors"
+					className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-purple-500 transition-colors"
 					title="Create soundbite clip"
 				>
 					<Scissors className="h-3.5 w-3.5" />

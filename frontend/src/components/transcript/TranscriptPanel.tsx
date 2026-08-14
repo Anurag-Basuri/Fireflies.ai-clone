@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Users, Filter } from 'lucide-react';
+import { Users, FileText } from 'lucide-react';
 import type { TranscriptSegment, Speaker } from '@/types';
 import { usePlayerStore } from '@/store/playerStore';
 import { TranscriptLine } from './TranscriptLine';
@@ -102,46 +102,57 @@ export function TranscriptPanel({
 	};
 
 	return (
-		<div className="flex flex-col h-full rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] shadow-xs overflow-hidden">
-			{/* Controls header */}
-			<div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 border-b border-[var(--border-color)]/60 p-3 bg-[var(--bg-secondary)]/50">
-				{/* In-transcript search bar */}
-				<div className="flex-1">
-					<TranscriptSearchBar
-						query={searchQuery}
-						onQueryChange={setSearchQuery}
-						totalMatches={matchedSegments.length}
-						currentMatchIndex={currentMatchIndex}
-						onNextMatch={handleNextMatch}
-						onPrevMatch={handlePrevMatch}
-						onClear={() => setSearchQuery('')}
-					/>
+		<div className="flex flex-col h-full rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] shadow-sm overflow-hidden">
+			{/* Header with title */}
+			<div className="flex flex-col gap-2.5 border-b border-[var(--border-color)] p-4 bg-[var(--bg-secondary)]/50">
+				{/* Label */}
+				<div className="flex items-center justify-between">
+					<div className="flex items-center gap-2">
+						<FileText className="h-4 w-4 text-[var(--brand-primary)]" />
+						<h3 className="text-sm font-semibold text-[var(--text-primary)]">
+							Transcript
+						</h3>
+						<span className="text-xs text-[var(--text-muted)] font-medium">
+							{segments.length} segments
+						</span>
+					</div>
+
+					{/* Speaker Filter Dropdown */}
+					{speakers.length > 0 && (
+						<div className="flex items-center gap-1.5 rounded-full border border-[var(--border-color)] bg-[var(--bg-card)] px-3 py-1.5 shadow-sm shrink-0">
+							<Users className="h-3.5 w-3.5 text-[var(--text-muted)]" />
+							<select
+								value={speakerFilter}
+								onChange={(e) => setSpeakerFilter(e.target.value)}
+								className="bg-transparent text-sm text-[var(--text-primary)] outline-none cursor-pointer"
+							>
+								<option value="all">All Speakers ({speakers.length})</option>
+								{speakers.map((sp) => (
+									<option key={sp.id} value={sp.label}>
+										{sp.label}
+									</option>
+								))}
+							</select>
+						</div>
+					)}
 				</div>
 
-				{/* Speaker Filter Dropdown */}
-				{speakers.length > 0 && (
-					<div className="flex items-center gap-1.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] px-2.5 py-1.5 shadow-xs shrink-0">
-						<Users className="h-3.5 w-3.5 text-[var(--text-muted)]" />
-						<select
-							value={speakerFilter}
-							onChange={(e) => setSpeakerFilter(e.target.value)}
-							className="bg-transparent text-xs text-[var(--text-primary)] outline-none"
-						>
-							<option value="all">All Speakers ({speakers.length})</option>
-							{speakers.map((sp) => (
-								<option key={sp.id} value={sp.label}>
-									{sp.label}
-								</option>
-							))}
-						</select>
-					</div>
-				)}
+				{/* In-transcript search bar */}
+				<TranscriptSearchBar
+					query={searchQuery}
+					onQueryChange={setSearchQuery}
+					totalMatches={matchedSegments.length}
+					currentMatchIndex={currentMatchIndex}
+					onNextMatch={handleNextMatch}
+					onPrevMatch={handlePrevMatch}
+					onClear={() => setSearchQuery('')}
+				/>
 			</div>
 
 			{/* Scrollable Segments List */}
 			<div
 				ref={containerRef}
-				className="flex-1 overflow-y-auto p-3 space-y-1 divide-y divide-[var(--border-color)]/30"
+				className="flex-1 overflow-y-auto p-3 space-y-0.5"
 			>
 				{isLoading ? (
 					Array.from({ length: 8 }).map((_, i) => (
