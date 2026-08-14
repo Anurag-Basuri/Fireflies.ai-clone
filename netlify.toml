@@ -1,7 +1,6 @@
-# Netlify build configuration for Next.js in a monorepo setup
+# Netlify configuration for Next.js App Router monorepo
 [build]
   base = "frontend"
-  publish = ".next"
   command = "npm run build"
 
 [build.environment]
