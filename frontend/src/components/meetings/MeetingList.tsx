@@ -41,7 +41,7 @@ export function MeetingList({
 	const [viewMode, setViewMode] = React.useState<'grid' | 'list'>('grid');
 
 	return (
-		<div className="space-y-5">
+		<div className="flex flex-col gap-5">
 			{/* Top control bar: count and view mode toggle */}
 			<div className="flex items-center justify-between text-sm text-[var(--text-secondary)]">
 				<span>

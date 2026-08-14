@@ -95,7 +95,7 @@ export default function MeetingsPage() {
 	const totalMeetings = meetingsData?.total || 0;
 
 	return (
-		<div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:px-10 space-y-6 animate-fade-in-up">
+		<div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:px-10 flex flex-col gap-6 animate-fade-in-up">
 			{/* Page Header */}
 			<div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
 				<div>

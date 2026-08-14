@@ -57,18 +57,18 @@ export function FilterBar({
 	);
 
 	return (
-		<div className="space-y-3">
+		<div className="flex flex-col gap-4">
 			{/* Top row: search query and sort dropdown */}
 			<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
 				{/* Search meetings input */}
 				<div className="relative flex-1">
-					<Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)]" />
+					<Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)]" />
 					<input
 						type="text"
-						placeholder="Search by title or topic..."
+						placeholder="Search titles..."
 						value={searchQuery}
 						onChange={(e) => onSearchChange(e.target.value)}
-						className="w-full rounded-full border border-[var(--border-color)] bg-[var(--bg-card)] py-2.5 pl-11 pr-10 text-sm text-[var(--text-primary)] outline-none transition-all focus:border-[var(--brand-primary)] focus:ring-2 focus:ring-[var(--brand-primary)]/15 placeholder:text-[var(--text-muted)] shadow-sm"
+						className="w-full rounded-full border border-[var(--border-color)] bg-[var(--bg-card)] py-2.5 pl-10 pr-10 text-sm text-[var(--text-primary)] outline-none transition-all focus:border-[var(--brand-primary)] focus:ring-2 focus:ring-[var(--brand-primary)]/15 placeholder:text-[var(--text-muted)] shadow-sm"
 					/>
 					{searchQuery && (
 						<button
@@ -95,8 +95,8 @@ export function FilterBar({
 			</div>
 
 			{/* Bottom row: Filter chips */}
-			<div className="flex flex-wrap items-center gap-2 text-sm">
-				<span className="flex items-center gap-1.5 font-medium text-[var(--text-muted)] mr-1">
+			<div className="flex flex-wrap items-center gap-3 text-sm">
+				<span className="flex items-center gap-1.5 font-medium text-[var(--text-muted)]">
 					<SlidersHorizontal className="h-3.5 w-3.5" />
 					Filters:
 				</span>

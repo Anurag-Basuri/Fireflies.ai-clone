@@ -47,13 +47,13 @@ export function Navbar() {
 			{/* Global Search — wide and centered */}
 			<form onSubmit={handleSearch} className="flex-1 max-w-xl">
 				<div className="relative group">
-					<Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-[var(--brand-primary)] transition-colors" />
+					<Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-[var(--brand-primary)] transition-colors" />
 					<input
 						type="text"
-						placeholder="Search meetings, speakers, topics..."
+						placeholder="Search meetings, speakers..."
 						value={searchValue}
 						onChange={(e) => setSearchValue(e.target.value)}
-						className="w-full rounded-full border py-2.5 pl-11 pr-16 text-sm outline-none transition-all focus:border-[var(--brand-primary)] focus:ring-2 focus:ring-[var(--brand-primary)]/15 placeholder:text-[var(--text-muted)]"
+						className="w-full rounded-full border py-2.5 pl-10 pr-14 text-sm outline-none transition-all focus:border-[var(--brand-primary)] focus:ring-2 focus:ring-[var(--brand-primary)]/15 placeholder:text-[var(--text-muted)]"
 						style={{
 							backgroundColor: 'var(--bg-secondary)',
 							borderColor: 'var(--border-color)',
