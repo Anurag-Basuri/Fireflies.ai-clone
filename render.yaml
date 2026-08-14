@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: fireflies-backend
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:///./fireflies.db
+      - key: LLM_PROVIDER
+        value: gemini
+      - key: LLM_MODEL
+        value: gemini-flash-latest
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        value: http://localhost:3000,https://fireflies-notes.netlify.app
+      - key: MEDIA_STORAGE_PATH
+        value: ./media
+      - key: MAX_UPLOAD_MB
+        value: 25
