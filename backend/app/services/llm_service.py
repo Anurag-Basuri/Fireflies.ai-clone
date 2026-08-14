@@ -59,7 +59,9 @@ def _get_gemini_client():
         api_key=settings.gemini_api_key,
         base_url=settings.llm_base_url or "https://generativelanguage.googleapis.com/v1beta/openai/",
     )
-    model = settings.llm_model or "gemini-flash-latest"
+    model = settings.llm_model
+    if not model or "1.5" in model or "2.0" in model or "gpt" in model or "claude" in model:
+        model = "gemini-flash-latest"
     return client, model
 
 
