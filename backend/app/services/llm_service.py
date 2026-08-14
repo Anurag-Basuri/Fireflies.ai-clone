@@ -53,43 +53,48 @@ USER QUESTION: {question}
 Provide a clear, concise answer based only on the meeting content. If the answer cannot be determined from the meeting content, say so."""
 
 
-# Helper to get the configured Google Gemini API client and model
+# Helper to get the configured Google Gemini API client and model candidates
 def _get_gemini_client():
     client = openai.OpenAI(
         api_key=settings.gemini_api_key,
         base_url=settings.llm_base_url or "https://generativelanguage.googleapis.com/v1beta/openai/",
     )
-    model = settings.llm_model
-    if not model or "1.5" in model or "2.0" in model or "gpt" in model or "claude" in model:
-        model = "gemini-flash-latest"
-    return client, model
+    models = ["gemini-flash-lite-latest", "gemini-flash-latest"]
+    if settings.llm_model and settings.llm_model not in models:
+        models.insert(0, settings.llm_model)
+    return client, models
 
 
-# Call Google Gemini to generate a structured meeting summary
+# Call Google Gemini to generate a structured meeting summary with auto-failover
 def generate_summary_with_llm(transcript_text: str) -> Optional[dict]:
     if not settings.gemini_api_key:
         logger.info("No Gemini API key configured, using fallback summary")
         return None
 
     prompt = SUMMARY_PROMPT.format(transcript_text=transcript_text[:15000])
+    client, models = _get_gemini_client()
 
-    try:
-        client, model = _get_gemini_client()
-        response = client.chat.completions.create(
-            model=model,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.3,
-            max_tokens=2000,
-            timeout=30,
-        )
-        content = response.choices[0].message.content
-        return _parse_llm_json(content)
-    except Exception as e:
-        logger.error(f"Gemini summary generation failed: {e}")
-        return None
+    for model in models:
+        try:
+            response = client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.3,
+                max_tokens=2000,
+                timeout=30,
+            )
+            content = response.choices[0].message.content
+            parsed = _parse_llm_json(content)
+            if parsed:
+                return parsed
+        except Exception as e:
+            logger.warning(f"Model {model} failed ({e}), attempting fallback model...")
+
+    logger.error("All Gemini models failed, falling back to rule-based summary")
+    return None
 
 
-# Send a meeting-scoped Q&A question to Google Gemini
+# Send a meeting-scoped Q&A question to Google Gemini with auto-failover
 def ask_meeting_question(
     question: str,
     transcript_text: str,
@@ -103,20 +108,23 @@ def ask_meeting_question(
         transcript_text=transcript_text[:10000],
         question=question,
     )
+    client, models = _get_gemini_client()
 
-    try:
-        client, model = _get_gemini_client()
-        response = client.chat.completions.create(
-            model=model,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.5,
-            max_tokens=1000,
-            timeout=30,
-        )
-        return response.choices[0].message.content
-    except Exception as e:
-        logger.error(f"Gemini Ask AI failed: {e}")
-        return "I encountered an error processing your question. Please try again."
+    for model in models:
+        try:
+            response = client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.5,
+                max_tokens=1000,
+                timeout=30,
+            )
+            if response.choices[0].message.content:
+                return response.choices[0].message.content
+        except Exception as e:
+            logger.warning(f"Ask AI model {model} failed ({e}), attempting fallback model...")
+
+    return "I encountered an error processing your question. Please try again."
 
 
 # Rule-based fallback when the LLM is unavailable or fails
