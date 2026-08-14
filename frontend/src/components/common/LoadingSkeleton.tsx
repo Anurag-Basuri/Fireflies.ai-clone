@@ -4,7 +4,7 @@ import React from 'react';
 // Meeting card skeleton for library loading state
 export function MeetingCardSkeleton() {
 	return (
-		<div className="flex flex-col justify-between rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-xs">
+		<div className="flex flex-col justify-between rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-sm">
 			<div>
 				<div className="flex items-center justify-between gap-2">
 					<div className="skeleton h-5 w-2/3 rounded-md" />

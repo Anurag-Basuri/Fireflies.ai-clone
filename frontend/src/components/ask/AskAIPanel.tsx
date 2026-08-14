@@ -87,58 +87,61 @@ export function AskAIPanel({ meetingId }: AskAIPanelProps) {
 	];
 
 	return (
-		<div className="flex flex-col h-full rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] shadow-xs overflow-hidden">
+		<div className="flex flex-col h-full rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] shadow-sm overflow-hidden">
 			{/* Header */}
-			<div className="flex items-center gap-2 border-b border-[var(--border-color)]/60 p-4 bg-[var(--bg-secondary)]/50">
-				<div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--brand-primary)] text-white shadow-xs">
-					<Bot className="h-4 w-4" />
+			<div className="flex items-center gap-3 border-b border-[var(--border-color)]/60 p-4 bg-[var(--bg-secondary)]/50">
+				<div
+					className="flex h-9 w-9 items-center justify-center rounded-xl text-white shadow-sm"
+					style={{ background: 'var(--brand-gradient)' }}
+				>
+					<Bot className="h-5 w-5" />
 				</div>
 				<div>
-					<h4 className="text-sm font-semibold text-[var(--text-primary)] flex items-center gap-1.5">
-						Ask Fred
-						<span className="rounded-full bg-purple-500/10 px-2 py-0.2 text-[10px] font-medium text-purple-600 dark:text-purple-400">
+					<h4 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
+						AskFred
+						<span className="rounded-full bg-purple-500/10 px-2 py-0.5 text-[10px] font-semibold text-purple-600 dark:text-purple-400 border border-purple-500/20">
 							AI Assistant
 						</span>
 					</h4>
-					<p className="text-[11px] text-[var(--text-muted)]">
-						Answers questions using this meeting transcript & summary
+					<p className="text-xs text-[var(--text-muted)] mt-0.5">
+						Answers questions using this meeting's transcript
 					</p>
 				</div>
 			</div>
 
 			{/* Chat Messages scroll area */}
-			<div className="flex-1 overflow-y-auto p-4 space-y-4">
+			<div className="flex-1 overflow-y-auto p-4 space-y-5">
 				{messages.map((msg, idx) => (
 					<div
 						key={idx}
-						className={`flex items-start gap-2.5 ${
+						className={`flex items-start gap-3 ${
 							msg.role === 'user' ? 'flex-row-reverse' : ''
 						}`}
 					>
 						<div
-							className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+							className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
 								msg.role === 'user'
-									? 'bg-[var(--brand-primary)] text-white'
-									: 'bg-[var(--bg-tertiary)] text-[var(--brand-primary)]'
+									? 'bg-[var(--brand-primary)] text-white shadow-sm'
+									: 'bg-[var(--bg-tertiary)] text-[var(--brand-primary)] border border-[var(--border-color)]'
 							}`}
 						>
 							{msg.role === 'user' ? (
-								<User className="h-3.5 w-3.5" />
+								<User className="h-4 w-4" />
 							) : (
-								<Sparkles className="h-3.5 w-3.5" />
+								<Sparkles className="h-4 w-4" />
 							)}
 						</div>
 
 						<div
-							className={`max-w-[80%] rounded-2xl p-3 text-xs leading-relaxed ${
+							className={`max-w-[85%] rounded-2xl p-3.5 text-sm leading-relaxed shadow-sm ${
 								msg.role === 'user'
-									? 'bg-[var(--brand-primary)] text-white rounded-tr-xs'
-									: 'bg-[var(--bg-secondary)] text-[var(--text-primary)] border border-[var(--border-color)]/60 rounded-tl-xs'
+									? 'bg-[var(--brand-primary)] text-white rounded-tr-sm'
+									: 'bg-[var(--bg-secondary)] text-[var(--text-primary)] border border-[var(--border-color)]/60 rounded-tl-sm'
 							}`}
 						>
 							<p>{msg.content}</p>
 							<span
-								className={`block text-[10px] mt-1 text-right opacity-70 ${
+								className={`block text-[10px] mt-2 text-right opacity-70 ${
 									msg.role === 'user'
 										? 'text-white'
 										: 'text-[var(--text-muted)]'
@@ -151,11 +154,11 @@ export function AskAIPanel({ meetingId }: AskAIPanelProps) {
 				))}
 
 				{isLoading && (
-					<div className="flex items-start gap-2.5">
-						<div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--bg-tertiary)] text-[var(--brand-primary)]">
-							<Loader2 className="h-3.5 w-3.5 animate-spin" />
+					<div className="flex items-start gap-3">
+						<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--bg-tertiary)] text-[var(--brand-primary)] border border-[var(--border-color)]">
+							<Loader2 className="h-4 w-4 animate-spin" />
 						</div>
-						<div className="rounded-2xl rounded-tl-xs bg-[var(--bg-secondary)] border border-[var(--border-color)]/60 p-3 text-xs text-[var(--text-muted)]">
+						<div className="rounded-2xl rounded-tl-sm bg-[var(--bg-secondary)] border border-[var(--border-color)]/60 p-3.5 text-sm text-[var(--text-muted)] shadow-sm">
 							Fred is thinking...
 						</div>
 					</div>
@@ -164,12 +167,12 @@ export function AskAIPanel({ meetingId }: AskAIPanelProps) {
 
 			{/* Suggested prompt chips */}
 			{messages.length <= 2 && (
-				<div className="px-4 py-2 border-t border-[var(--border-color)]/40 bg-[var(--bg-secondary)]/30 flex flex-wrap gap-1.5">
+				<div className="px-4 py-3 border-t border-[var(--border-color)]/40 bg-[var(--bg-secondary)]/30 flex flex-wrap gap-2">
 					{suggestions.map((sug, i) => (
 						<button
 							key={i}
 							onClick={() => setInputQuestion(sug)}
-							className="rounded-full border border-[var(--border-color)] bg-[var(--bg-card)] px-2.5 py-1 text-[11px] text-[var(--text-secondary)] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition-colors text-left"
+							className="rounded-full border border-[var(--border-color)] bg-[var(--bg-card)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition-colors shadow-sm text-left"
 						>
 							{sug}
 						</button>
@@ -180,22 +183,22 @@ export function AskAIPanel({ meetingId }: AskAIPanelProps) {
 			{/* Chat input box */}
 			<form
 				onSubmit={handleSend}
-				className="flex items-center gap-2 border-t border-[var(--border-color)]/60 p-3 bg-[var(--bg-card)]"
+				className="flex items-center gap-2 border-t border-[var(--border-color)]/60 p-4 bg-[var(--bg-card)]"
 			>
 				<input
 					type="text"
-					placeholder="Ask Fred a question about this meeting..."
+					placeholder="Ask Fred a question..."
 					value={inputQuestion}
 					onChange={(e) => setInputQuestion(e.target.value)}
 					disabled={isLoading}
-					className="flex-1 rounded-xl border border-[var(--border-color)] bg-[var(--bg-secondary)] px-3 py-2 text-xs text-[var(--text-primary)] outline-none focus:border-[var(--brand-primary)] focus:ring-2 focus:ring-[var(--brand-primary)]/20"
+					className="flex-1 rounded-full border border-[var(--border-color)] bg-[var(--bg-secondary)] px-4 py-2.5 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--brand-primary)] focus:ring-2 focus:ring-[var(--brand-primary)]/20 shadow-sm"
 				/>
 				<button
 					type="submit"
 					disabled={isLoading || !inputQuestion.trim()}
-					className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--brand-primary)] text-white shadow-xs hover:bg-[var(--brand-primary-dark)] disabled:opacity-50 transition-colors shrink-0"
+					className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--brand-primary)] text-white shadow-sm hover:bg-[var(--brand-primary-dark)] disabled:opacity-50 transition-colors shrink-0"
 				>
-					<Send className="h-3.5 w-3.5" />
+					<Send className="h-4 w-4 ml-0.5" />
 				</button>
 			</form>
 		</div>

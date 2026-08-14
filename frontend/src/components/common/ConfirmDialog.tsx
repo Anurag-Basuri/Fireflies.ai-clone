@@ -69,7 +69,7 @@ export function ConfirmDialog({
 						type="button"
 						onClick={onCancel}
 						disabled={isLoading}
-						className="rounded-xl border border-[var(--border-color)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] transition-colors disabled:opacity-50"
+						className="rounded-full border border-[var(--border-color)] px-5 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] transition-colors disabled:opacity-50"
 					>
 						{cancelLabel}
 					</button>
@@ -77,10 +77,10 @@ export function ConfirmDialog({
 						type="button"
 						onClick={onConfirm}
 						disabled={isLoading}
-						className={`rounded-xl px-4 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50 ${
+						className={`rounded-full px-5 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50 shadow-sm ${
 							isDestructive
-								? 'bg-red-600 hover:bg-red-700'
-								: 'bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-dark)]'
+								? 'bg-red-600 hover:bg-red-700 hover:shadow-red-600/20'
+								: 'bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-dark)] hover:shadow-[var(--brand-primary)]/20'
 						}`}
 					>
 						{isLoading ? 'Processing...' : confirmLabel}
