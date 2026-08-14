@@ -10,6 +10,7 @@ import {
 	Volume2,
 	VolumeX,
 	Gauge,
+	Sparkles,
 } from 'lucide-react';
 import { usePlayerStore } from '@/store/playerStore';
 import { formatTime } from '@/lib/utils';
@@ -40,6 +41,7 @@ export function MediaPlayer({ mediaUrl, title }: MediaPlayerProps) {
 	} = usePlayerStore();
 
 	const audioSrc = mediaUrl || '/media/sample-meeting.mp3';
+	const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
 
 	// Handle seek requests from transcript or outline
 	useEffect(() => {
@@ -115,7 +117,7 @@ export function MediaPlayer({ mediaUrl, title }: MediaPlayerProps) {
 	const speedOptions = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
 	return (
-		<div className="sticky top-0 z-20 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-4 shadow-sm backdrop-blur-md">
+		<div className="sticky top-0 z-20 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-4 shadow-sm backdrop-blur-md transition-colors">
 			<audio
 				ref={audioRef}
 				src={audioSrc}
@@ -133,12 +135,20 @@ export function MediaPlayer({ mediaUrl, title }: MediaPlayerProps) {
 				onEnded={() => setIsPlaying(false)}
 			/>
 
-			{/* Seek bar and time display */}
+			{/* Seek bar and time display with progress fill */}
 			<div className="flex items-center gap-3">
-				<span className="text-xs font-mono text-[var(--text-muted)] w-12 text-right">
+				<span className="text-xs font-mono font-medium text-[var(--text-secondary)] w-12 text-right">
 					{formatTime(currentTime)}
 				</span>
-				<div className="relative flex-1 flex items-center">
+				<div className="relative flex-1 flex items-center group">
+					{/* Background track */}
+					<div className="absolute left-0 right-0 h-1.5 rounded-full bg-[var(--border-color)] overflow-hidden">
+						{/* Progress highlight bar */}
+						<div
+							className="h-full bg-gradient-to-r from-[var(--brand-primary)] to-[var(--brand-accent)] transition-all"
+							style={{ width: `${progressPercent}%` }}
+						/>
+					</div>
 					<input
 						type="range"
 						min={0}
@@ -146,10 +156,10 @@ export function MediaPlayer({ mediaUrl, title }: MediaPlayerProps) {
 						step={0.1}
 						value={currentTime}
 						onChange={handleSeekChange}
-						className="w-full"
+						className="relative w-full z-10 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
 					/>
 				</div>
-				<span className="text-xs font-mono text-[var(--text-muted)] w-12">
+				<span className="text-xs font-mono font-medium text-[var(--text-muted)] w-12">
 					{formatTime(duration)}
 				</span>
 			</div>
@@ -160,7 +170,7 @@ export function MediaPlayer({ mediaUrl, title }: MediaPlayerProps) {
 				<div className="flex items-center gap-2">
 					<button
 						onClick={toggleMute}
-						className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] transition-colors"
+						className="rounded-xl p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] transition-colors"
 						title={isMuted ? 'Unmute' : 'Mute'}
 					>
 						{isMuted ? (
@@ -180,11 +190,11 @@ export function MediaPlayer({ mediaUrl, title }: MediaPlayerProps) {
 					/>
 				</div>
 
-				{/* Center: Play/Pause and Skip buttons */}
+				{/* Center: Play/Pause and Skip buttons with Fireflies glowing styling */}
 				<div className="flex items-center gap-3">
 					<button
 						onClick={() => skipTime(-5)}
-						className="rounded-full p-2 text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] transition-colors"
+						className="rounded-full p-2 text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--brand-primary)] transition-colors"
 						title="Rewind 5 seconds"
 					>
 						<RotateCcw className="h-4 w-4" />
@@ -192,7 +202,13 @@ export function MediaPlayer({ mediaUrl, title }: MediaPlayerProps) {
 
 					<button
 						onClick={togglePlay}
-						className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--brand-primary)] text-white shadow-md hover:bg-[var(--brand-primary-dark)] hover:scale-105 active:scale-95 transition-all"
+						className="flex h-11 w-11 items-center justify-center rounded-full text-white shadow-md hover:scale-105 active:scale-95 transition-all"
+						style={{
+							background: 'linear-gradient(135deg, #5b4dfb 0%, #8b5cf6 100%)',
+							boxShadow: isPlaying
+								? '0 0 16px rgba(91, 77, 251, 0.6)'
+								: '0 4px 12px rgba(91, 77, 251, 0.3)',
+						}}
 						title={isPlaying ? 'Pause' : 'Play'}
 					>
 						{isPlaying ? (
@@ -204,7 +220,7 @@ export function MediaPlayer({ mediaUrl, title }: MediaPlayerProps) {
 
 					<button
 						onClick={() => skipTime(5)}
-						className="rounded-full p-2 text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] transition-colors"
+						className="rounded-full p-2 text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--brand-primary)] transition-colors"
 						title="Forward 5 seconds"
 					>
 						<RotateCw className="h-4 w-4" />
@@ -215,7 +231,7 @@ export function MediaPlayer({ mediaUrl, title }: MediaPlayerProps) {
 				<div className="relative">
 					<button
 						onClick={() => setShowSpeedMenu(!showSpeedMenu)}
-						className="flex items-center gap-1.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-secondary)] px-2.5 py-1 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] transition-colors"
+						className="flex items-center gap-1.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-secondary)] px-2.5 py-1 text-xs font-semibold text-[var(--text-primary)] hover:border-[var(--brand-primary)]/40 transition-colors shadow-2xs"
 					>
 						<Gauge className="h-3.5 w-3.5 text-[var(--brand-primary)]" />
 						<span>{playbackRate}x</span>
@@ -227,7 +243,7 @@ export function MediaPlayer({ mediaUrl, title }: MediaPlayerProps) {
 								className="fixed inset-0 z-30"
 								onClick={() => setShowSpeedMenu(false)}
 							/>
-							<div className="absolute right-0 bottom-full mb-1 z-40 w-24 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] py-1 shadow-xl">
+							<div className="absolute right-0 bottom-full mb-1 z-40 w-24 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] py-1 shadow-xl">
 								{speedOptions.map((speed) => (
 									<button
 										key={speed}
@@ -238,7 +254,7 @@ export function MediaPlayer({ mediaUrl, title }: MediaPlayerProps) {
 										className={`flex w-full items-center justify-between px-3 py-1.5 text-xs ${
 											playbackRate === speed
 												? 'font-bold text-[var(--brand-primary)] bg-[var(--brand-primary)]/10'
-												: 'text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
+												: 'text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]'
 										}`}
 									>
 										<span>{speed}x</span>

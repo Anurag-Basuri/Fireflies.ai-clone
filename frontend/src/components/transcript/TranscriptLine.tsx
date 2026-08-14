@@ -2,7 +2,8 @@
 'use client';
 
 import React from 'react';
-import { MessageSquare, Scissors, Play } from 'lucide-react';
+import { MessageSquare, Scissors, Play, Copy, Check } from 'lucide-react';
+import { toast } from 'sonner';
 import type { TranscriptSegment } from '@/types';
 import { formatTime, getInitials } from '@/lib/utils';
 
@@ -26,8 +27,20 @@ export function TranscriptLine({
 	onAddComment,
 	onCreateSoundbite,
 }: TranscriptLineProps) {
+	const [copied, setCopied] = React.useState(false);
 	const speakerName = segment.speaker_label || 'Speaker';
-	const speakerColor = segment.speaker_color || '#6366F1';
+	const speakerColor = segment.speaker_color || '#5B4DFB';
+
+	// Copy transcript line to clipboard
+	const handleCopy = (e: React.MouseEvent) => {
+		e.stopPropagation();
+		navigator.clipboard.writeText(
+			`[${formatTime(segment.start_time)}] ${speakerName}: ${segment.content}`,
+		);
+		setCopied(true);
+		toast.success('Transcript quote copied');
+		setTimeout(() => setCopied(false), 2000);
+	};
 
 	// Highlight matches in content
 	const renderContent = () => {
@@ -65,13 +78,15 @@ export function TranscriptLine({
 		<div
 			id={`segment-${segment.id}`}
 			onClick={() => onSeek(segment.start_time)}
-			className={`group relative flex items-start gap-3.5 rounded-xl p-3.5 transition-all duration-150 cursor-pointer ${
-				isActive ? 'transcript-active shadow-xs' : 'hover:bg-[var(--bg-card)]'
+			className={`group relative flex items-start gap-3.5 rounded-2xl p-3.5 transition-all duration-150 cursor-pointer ${
+				isActive
+					? 'transcript-active shadow-2xs'
+					: 'hover:bg-[var(--bg-secondary)]'
 			}`}
 		>
-			{/* Speaker Avatar */}
+			{/* Speaker Avatar Badge */}
 			<div
-				className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white shadow-xs"
+				className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white shadow-2xs mt-0.5"
 				style={{ backgroundColor: speakerColor }}
 			>
 				{getInitials(speakerName)}
@@ -79,37 +94,48 @@ export function TranscriptLine({
 
 			{/* Segment Body */}
 			<div className="flex-1 min-w-0">
-				{/* Speaker name and timestamp */}
+				{/* Speaker name, timestamp, and active pill */}
 				<div className="flex items-center gap-2">
 					<span className="text-xs font-semibold text-[var(--text-primary)]">
 						{speakerName}
 					</span>
-					<span className="text-[11px] font-mono text-[var(--text-muted)]">
+					<span className="text-[11px] font-mono text-[var(--text-muted)] bg-[var(--bg-tertiary)] px-1.5 py-0.5 rounded-md">
 						{formatTime(segment.start_time)}
 					</span>
 					{isActive && (
-						<span className="flex items-center gap-1 rounded-full bg-[var(--brand-primary)]/10 px-2 py-0.5 text-[10px] font-medium text-[var(--brand-primary)]">
+						<span className="flex items-center gap-1 rounded-full bg-[var(--brand-primary)]/10 px-2 py-0.5 text-[10px] font-semibold text-[var(--brand-primary)] animate-in fade-in duration-200">
 							<Play className="h-2.5 w-2.5 fill-current" />
 							Playing
 						</span>
 					)}
 				</div>
 
-				{/* Spoken Text */}
-				<p className="mt-1 text-sm text-[var(--text-secondary)] leading-relaxed">
+				{/* Spoken Text with crisp line height */}
+				<p className="mt-1.5 text-xs text-[var(--text-secondary)] leading-relaxed font-normal">
 					{renderContent()}
 				</p>
 			</div>
 
 			{/* Hover Action Bar */}
-			<div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-lg p-1 shadow-xs transition-opacity shrink-0">
+			<div className="opacity-0 group-hover:opacity-100 flex items-center gap-0.5 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-1 shadow-md transition-opacity shrink-0">
+				<button
+					onClick={handleCopy}
+					className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] transition-colors"
+					title="Copy quote"
+				>
+					{copied ? (
+						<Check className="h-3.5 w-3.5 text-emerald-500" />
+					) : (
+						<Copy className="h-3.5 w-3.5" />
+					)}
+				</button>
 				<button
 					onClick={(e) => {
 						e.stopPropagation();
 						onAddComment(segment.id);
 					}}
-					className="rounded p-1 text-[var(--text-muted)] hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)] transition-colors"
-					title="Comment on segment"
+					className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-secondary)] hover:text-[var(--brand-primary)] transition-colors"
+					title="Pin comment on segment"
 				>
 					<MessageSquare className="h-3.5 w-3.5" />
 				</button>
@@ -118,7 +144,7 @@ export function TranscriptLine({
 						e.stopPropagation();
 						onCreateSoundbite(segment);
 					}}
-					className="rounded p-1 text-[var(--text-muted)] hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)] transition-colors"
+					className="rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-secondary)] hover:text-purple-500 transition-colors"
 					title="Create soundbite clip"
 				>
 					<Scissors className="h-3.5 w-3.5" />

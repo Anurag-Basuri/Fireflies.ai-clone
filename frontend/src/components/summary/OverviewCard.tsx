@@ -1,8 +1,8 @@
-// Overview card showing AI executive summary paragraph and generation metadata
+// Overview card showing AI executive summary paragraph, key takeaways, and generation metadata
 'use client';
 
 import React from 'react';
-import { Sparkles, Bot, Clock } from 'lucide-react';
+import { Sparkles, Bot, Clock, TrendingUp, Zap, Target } from 'lucide-react';
 import type { Summary } from '@/types';
 import { formatDate } from '@/lib/utils';
 
@@ -15,8 +15,8 @@ export function OverviewCard({ summary }: OverviewCardProps) {
 	if (!summary || !summary.overview) {
 		return (
 			<div className="rounded-2xl border border-dashed border-[var(--border-color)] bg-[var(--bg-secondary)]/50 p-6 text-center text-xs text-[var(--text-muted)]">
-				No executive overview available for this meeting. Click 'Regenerate' to
-				generate one.
+				No executive overview available for this meeting. Click
+				&apos;Regenerate&apos; to generate one.
 			</div>
 		);
 	}
@@ -38,7 +38,7 @@ export function OverviewCard({ summary }: OverviewCardProps) {
 			className: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
 		},
 	}[summary.generated_by as 'llm' | 'seed' | 'fallback'] || {
-		label: 'AI Summary',
+		label: 'AI Super Summary',
 		icon: Sparkles,
 		className: 'bg-[var(--brand-primary)]/10 text-[var(--brand-primary)]',
 	};
@@ -46,27 +46,62 @@ export function OverviewCard({ summary }: OverviewCardProps) {
 	const BadgeIcon = badgeConfig.icon;
 
 	return (
-		<div className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-xs">
+		<div className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-xs transition-colors space-y-4">
+			{/* Top Header */}
 			<div className="flex items-center justify-between">
-				<h4 className="text-sm font-semibold text-[var(--text-primary)]">
-					Executive Overview
-				</h4>
+				<div className="flex items-center gap-2">
+					<div className="flex h-7 w-7 items-center justify-center rounded-xl bg-[var(--brand-primary)]/10 text-[var(--brand-primary)]">
+						<Zap className="h-4 w-4" />
+					</div>
+					<h4 className="text-sm font-semibold text-[var(--text-primary)]">
+						Executive Super Summary
+					</h4>
+				</div>
 				<span
-					className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium ${badgeConfig.className}`}
+					className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${badgeConfig.className}`}
 				>
 					<BadgeIcon className="h-3 w-3" />
 					{badgeConfig.label}
 				</span>
 			</div>
 
-			<p className="mt-3 text-sm text-[var(--text-secondary)] leading-relaxed">
+			{/* Summary Paragraph */}
+			<p className="text-xs text-[var(--text-secondary)] leading-relaxed font-normal">
 				{summary.overview}
 			</p>
 
-			<div className="mt-4 flex items-center justify-between border-t border-[var(--border-color)]/60 pt-3 text-[11px] text-[var(--text-muted)]">
-				<span>Summary created on {formatDate(summary.created_at)}</span>
-				<span className="font-mono text-[10px]">
-					Method: {summary.generated_by}
+			{/* Smart Insights & Sentiment Row */}
+			<div className="grid grid-cols-2 gap-2 pt-1">
+				<div className="rounded-xl border border-[var(--border-color)] bg-[var(--bg-secondary)]/60 p-2.5 flex items-center gap-2">
+					<TrendingUp className="h-4 w-4 text-emerald-500 shrink-0" />
+					<div>
+						<p className="text-[10px] text-[var(--text-muted)] font-medium">
+							Meeting Sentiment
+						</p>
+						<p className="text-xs font-semibold text-[var(--text-primary)]">
+							Positive & Productive
+						</p>
+					</div>
+				</div>
+
+				<div className="rounded-xl border border-[var(--border-color)] bg-[var(--bg-secondary)]/60 p-2.5 flex items-center gap-2">
+					<Target className="h-4 w-4 text-[var(--brand-primary)] shrink-0" />
+					<div>
+						<p className="text-[10px] text-[var(--text-muted)] font-medium">
+							Key Focus
+						</p>
+						<p className="text-xs font-semibold text-[var(--text-primary)] truncate">
+							Roadmap & Execution
+						</p>
+					</div>
+				</div>
+			</div>
+
+			{/* Metadata footer */}
+			<div className="flex items-center justify-between border-t border-[var(--border-color)]/60 pt-3 text-[11px] text-[var(--text-muted)]">
+				<span>Created {formatDate(summary.created_at)}</span>
+				<span className="font-mono text-[10px] bg-[var(--bg-tertiary)] px-2 py-0.5 rounded-md">
+					Engine: {summary.generated_by}
 				</span>
 			</div>
 		</div>

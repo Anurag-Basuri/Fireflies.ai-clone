@@ -1,4 +1,4 @@
-// Card representation of a meeting in the meetings library grid/list
+// Card representation of a meeting in the meetings library grid/list with Fireflies styling
 'use client';
 
 import React, { useState } from 'react';
@@ -12,6 +12,8 @@ import {
 	ExternalLink,
 	Sparkles,
 	Loader2,
+	Play,
+	Volume2,
 } from 'lucide-react';
 import type { MeetingListItem } from '@/types';
 import {
@@ -27,38 +29,38 @@ interface MeetingCardProps {
 	onDelete: (id: number) => void;
 }
 
-// Render individual meeting card with metadata, participant avatar stack, and actions
+// Render individual meeting card with metadata, participant avatar stack, and audio badge
 export function MeetingCard({ meeting, onDelete }: MeetingCardProps) {
 	const [menuOpen, setMenuOpen] = useState(false);
 
 	// Visible participants vs overflow count
-	const maxAvatars = 3;
+	const maxAvatars = 4;
 	const visibleParticipants = meeting.participants.slice(0, maxAvatars);
 	const overflowCount = meeting.participants.length - maxAvatars;
 
 	return (
-		<div className="group relative flex flex-col justify-between rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-xs transition-all duration-200 hover:border-[var(--brand-primary)]/40 hover:shadow-md">
+		<div className="group relative flex flex-col justify-between rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-xs transition-all duration-200 hover:border-[var(--brand-primary)]/50 hover:shadow-lg hover:shadow-[var(--brand-primary)]/5">
 			<div>
-				{/* Top row: status and action menu */}
+				{/* Top row: Status Badge and Action Menu */}
 				<div className="flex items-start justify-between gap-3">
-					<div className="flex flex-wrap items-center gap-2">
+					<div className="flex flex-wrap items-center gap-1.5">
 						{meeting.status === 'processing' ? (
-							<span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-600 dark:text-amber-400">
+							<span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-amber-600 dark:text-amber-400">
 								<Loader2 className="h-3 w-3 animate-spin" />
 								Processing AI
 							</span>
 						) : (
-							<span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+							<span className="inline-flex items-center gap-1 rounded-full bg-[var(--brand-primary)]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[var(--brand-primary)]">
 								<Sparkles className="h-3 w-3" />
-								Ready
+								AI Super Summary
 							</span>
 						)}
 
-						{/* Tags */}
+						{/* Tag chips */}
 						{meeting.tags.slice(0, 2).map((tag) => (
 							<span
 								key={tag.id}
-								className="rounded-full bg-[var(--bg-tertiary)] px-2.5 py-0.5 text-xs font-medium text-[var(--text-secondary)]"
+								className="rounded-full bg-[var(--bg-tertiary)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--text-secondary)]"
 							>
 								{tag.name}
 							</span>
@@ -73,7 +75,7 @@ export function MeetingCard({ meeting, onDelete }: MeetingCardProps) {
 								e.stopPropagation();
 								setMenuOpen(!menuOpen);
 							}}
-							className="rounded-lg p-1 text-[var(--text-muted)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] transition-colors"
+							className="rounded-xl p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] transition-colors"
 							aria-label="Actions"
 						>
 							<MoreVertical className="h-4 w-4" />
@@ -85,22 +87,22 @@ export function MeetingCard({ meeting, onDelete }: MeetingCardProps) {
 									className="fixed inset-0 z-40"
 									onClick={() => setMenuOpen(false)}
 								/>
-								<div className="absolute right-0 top-full z-50 mt-1 w-44 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] py-1.5 shadow-xl">
+								<div className="absolute right-0 top-full z-50 mt-1 w-44 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] py-1.5 shadow-xl">
 									<Link
 										href={`/meetings/${meeting.id}`}
-										className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]"
+										className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]"
 										onClick={() => setMenuOpen(false)}
 									>
-										<ExternalLink className="h-3.5 w-3.5" />
+										<ExternalLink className="h-3.5 w-3.5 text-[var(--brand-primary)]" />
 										Open Meeting
 									</Link>
 									<a
 										href={getExportUrl(meeting.id, 'md')}
 										download
-										className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]"
+										className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]"
 										onClick={() => setMenuOpen(false)}
 									>
-										<Download className="h-3.5 w-3.5" />
+										<Download className="h-3.5 w-3.5 text-blue-500" />
 										Export Markdown
 									</a>
 									<button
@@ -122,14 +124,17 @@ export function MeetingCard({ meeting, onDelete }: MeetingCardProps) {
 				</div>
 
 				{/* Meeting Title Link */}
-				<Link href={`/meetings/${meeting.id}`} className="mt-3 block">
-					<h3 className="text-base font-semibold text-[var(--text-primary)] line-clamp-2 group-hover:text-[var(--brand-primary)] transition-colors">
+				<Link
+					href={`/meetings/${meeting.id}`}
+					className="mt-3.5 block group/title"
+				>
+					<h3 className="text-base font-semibold text-[var(--text-primary)] line-clamp-2 group-hover/title:text-[var(--brand-primary)] transition-colors leading-snug">
 						{meeting.title}
 					</h3>
 				</Link>
 
-				{/* Metadata row: Date & Duration */}
-				<div className="mt-3 flex items-center gap-4 text-xs text-[var(--text-secondary)]">
+				{/* Metadata row: Date, Duration, and Audio Indicator */}
+				<div className="mt-3 flex items-center gap-3.5 text-xs text-[var(--text-secondary)]">
 					<div className="flex items-center gap-1.5">
 						<Calendar className="h-3.5 w-3.5 text-[var(--text-muted)]" />
 						<span>{formatDate(meeting.meeting_date)}</span>
@@ -138,11 +143,28 @@ export function MeetingCard({ meeting, onDelete }: MeetingCardProps) {
 						<Clock className="h-3.5 w-3.5 text-[var(--text-muted)]" />
 						<span>{formatDuration(meeting.duration_seconds)}</span>
 					</div>
+					<div className="flex items-center gap-1 text-[11px] text-[var(--brand-primary)] font-medium">
+						<Volume2 className="h-3 w-3" />
+						<span>Synced Audio</span>
+					</div>
+				</div>
+
+				{/* Simulated Audio Waveform Bar */}
+				<div className="mt-4 flex items-center gap-1 h-3.5 px-2 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-color)]/60">
+					{[
+						40, 75, 55, 90, 30, 80, 65, 45, 95, 70, 50, 85, 60, 40, 80, 55, 70,
+					].map((height, i) => (
+						<span
+							key={i}
+							className="flex-1 rounded-full bg-[var(--brand-primary)]/30 group-hover:bg-[var(--brand-primary)]/60 transition-colors"
+							style={{ height: `${height}%` }}
+						/>
+					))}
 				</div>
 			</div>
 
-			{/* Bottom row: Participants avatar stack */}
-			<div className="mt-6 flex items-center justify-between border-t border-[var(--border-color)]/60 pt-4">
+			{/* Bottom row: Participants avatar stack and Open CTA */}
+			<div className="mt-5 flex items-center justify-between border-t border-[var(--border-color)]/60 pt-3.5">
 				<div className="flex items-center">
 					<div className="flex -space-x-2 overflow-hidden">
 						{visibleParticipants.map((participant) => {
@@ -151,7 +173,7 @@ export function MeetingCard({ meeting, onDelete }: MeetingCardProps) {
 								<div
 									key={participant.id}
 									title={`${participant.name}${participant.role ? ` (${participant.role})` : ''}`}
-									className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[var(--bg-card)] text-[10px] font-bold text-white shadow-xs"
+									className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[var(--bg-card)] text-[10px] font-bold text-white shadow-2xs"
 									style={{ backgroundColor: bgColor }}
 								>
 									{getInitials(participant.name)}
@@ -167,18 +189,20 @@ export function MeetingCard({ meeting, onDelete }: MeetingCardProps) {
 							</div>
 						)}
 					</div>
-					<span className="ml-3 text-xs text-[var(--text-muted)] truncate max-w-[120px]">
+					<span className="ml-2.5 text-xs text-[var(--text-muted)] truncate max-w-[130px]">
 						{meeting.participants.length > 0
 							? meeting.participants.map((p) => p.name).join(', ')
 							: 'No participants'}
 					</span>
 				</div>
 
+				{/* Play / Open Button */}
 				<Link
 					href={`/meetings/${meeting.id}`}
-					className="text-xs font-medium text-[var(--brand-primary)] opacity-0 group-hover:opacity-100 transition-opacity hover:underline"
+					className="flex items-center gap-1 rounded-xl bg-[var(--bg-secondary)] px-3 py-1.5 text-xs font-semibold text-[var(--brand-primary)] group-hover:bg-[var(--brand-primary)] group-hover:text-white transition-all shadow-2xs"
 				>
-					View →
+					<Play className="h-3 w-3 fill-current" />
+					<span>Open</span>
 				</Link>
 			</div>
 		</div>
