@@ -17,14 +17,14 @@ export function TopicsOutline({ topics }: TopicsOutlineProps) {
 
 	if (topics.length === 0) {
 		return (
-			<div className="rounded-2xl border border-dashed border-[var(--border-color)] bg-[var(--bg-secondary)]/50 p-6 text-center text-xs text-[var(--text-muted)]">
+			<div className="rounded-2xl border border-dashed border-[var(--border-color)] bg-[var(--bg-secondary)]/50 p-8 text-center text-sm text-[var(--text-muted)]">
 				No key topics or chapter markers available for this meeting.
 			</div>
 		);
 	}
 
 	return (
-		<div className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-xs">
+		<div className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-sm">
 			<div className="flex items-center gap-2 mb-4">
 				<Bookmark className="h-4 w-4 text-[var(--brand-primary)]" />
 				<h4 className="text-sm font-semibold text-[var(--text-primary)]">
@@ -60,13 +60,13 @@ export function TopicsOutline({ topics }: TopicsOutlineProps) {
 								<span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--bg-secondary)] text-[11px] font-bold text-[var(--text-secondary)]">
 									{index + 1}
 								</span>
-								<span className="text-xs font-medium text-[var(--text-primary)]">
+								<span className="text-sm font-medium text-[var(--text-primary)]">
 									{topic.title}
 								</span>
 							</div>
 
 							{hasTime && (
-								<div className="flex items-center gap-1.5 rounded-lg bg-[var(--bg-secondary)] px-2.5 py-1 text-[11px] font-mono text-[var(--brand-primary)] font-semibold">
+								<div className="flex items-center gap-1.5 rounded-full bg-[var(--bg-secondary)] px-3 py-1 text-xs font-mono text-[var(--brand-primary)] font-semibold shadow-sm">
 									<Play className="h-2.5 w-2.5 fill-current" />
 									<span>{formatTime(topic.start_time!)}</span>
 								</div>

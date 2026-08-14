@@ -69,39 +69,26 @@ export function SummaryPanel({
 	];
 
 	return (
-		<div className="flex flex-col h-full rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] shadow-xs overflow-hidden">
-			{/* Top Bar with Tabs and Regenerate button */}
-			<div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 border-b border-[var(--border-color)]/60 px-4 py-2.5 bg-[var(--bg-secondary)]/50">
-				{/* Horizontal Tab List */}
-				<div className="flex items-center gap-1 overflow-x-auto">
-					{tabs.map((tab) => {
-						const Icon = tab.icon;
-						const isActive = activeTab === tab.id;
-
-						return (
-							<button
-								key={tab.id}
-								onClick={() => setActiveTab(tab.id)}
-								className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium transition-all whitespace-nowrap ${
-									isActive
-										? 'bg-[var(--brand-primary)] text-white shadow-xs font-semibold'
-										: tab.isSpecial
-											? 'text-purple-600 hover:bg-purple-500/10 dark:text-purple-400'
-											: 'text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)]'
-								}`}
-							>
-								<Icon className="h-3.5 w-3.5" />
-								<span>{tab.label}</span>
-							</button>
-						);
-					})}
+		<div className="flex flex-col h-full rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] shadow-sm overflow-hidden">
+			{/* Header with AI badge */}
+			<div className="flex items-center justify-between px-4 pt-4 pb-0">
+				<div className="flex items-center gap-2">
+					<div
+						className="flex h-7 w-7 items-center justify-center rounded-lg"
+						style={{ background: 'var(--brand-gradient)' }}
+					>
+						<Sparkles className="h-4 w-4 text-white" />
+					</div>
+					<h3 className="text-sm font-bold text-[var(--text-primary)]">
+						AI Super Summary
+					</h3>
 				</div>
 
-				{/* Regenerate with AI button */}
+				{/* Regenerate button */}
 				<button
 					onClick={onRegenerate}
 					disabled={isRegenerating || isLoading}
-					className="flex items-center justify-center gap-1.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] px-3 py-1.5 text-xs font-medium text-[var(--brand-primary)] hover:border-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 disabled:opacity-50 transition-colors shadow-xs shrink-0"
+					className="btn-secondary text-xs py-1 px-3 disabled:opacity-50"
 					title="Regenerate summary with AI"
 				>
 					<RotateCw
@@ -111,6 +98,31 @@ export function SummaryPanel({
 				</button>
 			</div>
 
+			{/* Underline-style Tab Bar */}
+			<div className="flex items-center gap-0 border-b border-[var(--border-color)] px-4 mt-3 overflow-x-auto">
+				{tabs.map((tab) => {
+					const Icon = tab.icon;
+					const isActive = activeTab === tab.id;
+
+					return (
+						<button
+							key={tab.id}
+							onClick={() => setActiveTab(tab.id)}
+							className={`relative flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium transition-all whitespace-nowrap border-b-2 -mb-px ${
+								isActive
+									? 'text-[var(--brand-primary)] border-[var(--brand-primary)]'
+									: tab.isSpecial
+										? 'text-purple-500 border-transparent hover:text-purple-400 hover:border-purple-400/30'
+										: 'text-[var(--text-muted)] border-transparent hover:text-[var(--text-primary)] hover:border-[var(--border-hover)]'
+							}`}
+						>
+							<Icon className="h-3.5 w-3.5" />
+							<span>{tab.label}</span>
+						</button>
+					);
+				})}
+			</div>
+
 			{/* Tab Content Container */}
 			<div className="flex-1 overflow-y-auto p-4 space-y-4">
 				{isLoading || isRegenerating ? (
@@ -118,20 +130,20 @@ export function SummaryPanel({
 				) : (
 					<>
 						{activeTab === 'overview' && (
-							<div className="space-y-4 animate-in fade-in duration-150">
+							<div className="space-y-4 animate-fade-in-up">
 								<OverviewCard summary={summary} />
 								<NotesList bulletNotesJson={summary?.bullet_notes_json} />
 							</div>
 						)}
 
 						{activeTab === 'notes' && (
-							<div className="animate-in fade-in duration-150">
+							<div className="animate-fade-in-up">
 								<NotesList bulletNotesJson={summary?.bullet_notes_json} />
 							</div>
 						)}
 
 						{activeTab === 'actions' && (
-							<div className="animate-in fade-in duration-150">
+							<div className="animate-fade-in-up">
 								<ActionItemList
 									meetingId={meetingId}
 									items={actionItems}
@@ -141,13 +153,13 @@ export function SummaryPanel({
 						)}
 
 						{activeTab === 'outline' && (
-							<div className="animate-in fade-in duration-150">
+							<div className="animate-fade-in-up">
 								<TopicsOutline topics={keyTopics} />
 							</div>
 						)}
 
 						{activeTab === 'ask' && (
-							<div className="h-[500px] animate-in fade-in duration-150">
+							<div className="h-[500px] animate-fade-in-up">
 								<AskAIPanel meetingId={meetingId} />
 							</div>
 						)}

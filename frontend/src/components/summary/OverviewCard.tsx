@@ -14,7 +14,7 @@ interface OverviewCardProps {
 export function OverviewCard({ summary }: OverviewCardProps) {
 	if (!summary || !summary.overview) {
 		return (
-			<div className="rounded-2xl border border-dashed border-[var(--border-color)] bg-[var(--bg-secondary)]/50 p-6 text-center text-xs text-[var(--text-muted)]">
+			<div className="rounded-2xl border border-dashed border-[var(--border-color)] bg-[var(--bg-secondary)]/50 p-8 text-center text-sm text-[var(--text-muted)]">
 				No executive overview available for this meeting. Click
 				&apos;Regenerate&apos; to generate one.
 			</div>
@@ -46,19 +46,22 @@ export function OverviewCard({ summary }: OverviewCardProps) {
 	const BadgeIcon = badgeConfig.icon;
 
 	return (
-		<div className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-xs transition-colors space-y-4">
+		<div className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-sm transition-colors space-y-4">
 			{/* Top Header */}
 			<div className="flex items-center justify-between">
-				<div className="flex items-center gap-2">
-					<div className="flex h-7 w-7 items-center justify-center rounded-xl bg-[var(--brand-primary)]/10 text-[var(--brand-primary)]">
-						<Zap className="h-4 w-4" />
+				<div className="flex items-center gap-2.5">
+					<div
+						className="flex h-8 w-8 items-center justify-center rounded-xl"
+						style={{ background: 'var(--brand-gradient)' }}
+					>
+						<Zap className="h-4 w-4 text-white" />
 					</div>
-					<h4 className="text-sm font-semibold text-[var(--text-primary)]">
-						Executive Super Summary
+					<h4 className="text-sm font-bold text-[var(--text-primary)]">
+						Executive Summary
 					</h4>
 				</div>
 				<span
-					className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${badgeConfig.className}`}
+					className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${badgeConfig.className}`}
 				>
 					<BadgeIcon className="h-3 w-3" />
 					{badgeConfig.label}
@@ -66,31 +69,31 @@ export function OverviewCard({ summary }: OverviewCardProps) {
 			</div>
 
 			{/* Summary Paragraph */}
-			<p className="text-xs text-[var(--text-secondary)] leading-relaxed font-normal">
+			<p className="text-sm text-[var(--text-secondary)] leading-relaxed">
 				{summary.overview}
 			</p>
 
 			{/* Smart Insights & Sentiment Row */}
-			<div className="grid grid-cols-2 gap-2 pt-1">
-				<div className="rounded-xl border border-[var(--border-color)] bg-[var(--bg-secondary)]/60 p-2.5 flex items-center gap-2">
-					<TrendingUp className="h-4 w-4 text-emerald-500 shrink-0" />
+			<div className="grid grid-cols-2 gap-3 pt-1">
+				<div className="rounded-xl border border-[var(--border-color)] bg-[var(--bg-tertiary)]/60 p-3 flex items-center gap-2.5">
+					<TrendingUp className="h-5 w-5 text-emerald-500 shrink-0" />
 					<div>
-						<p className="text-[10px] text-[var(--text-muted)] font-medium">
+						<p className="text-xs text-[var(--text-muted)] font-medium">
 							Meeting Sentiment
 						</p>
-						<p className="text-xs font-semibold text-[var(--text-primary)]">
+						<p className="text-sm font-semibold text-[var(--text-primary)]">
 							Positive & Productive
 						</p>
 					</div>
 				</div>
 
-				<div className="rounded-xl border border-[var(--border-color)] bg-[var(--bg-secondary)]/60 p-2.5 flex items-center gap-2">
-					<Target className="h-4 w-4 text-[var(--brand-primary)] shrink-0" />
+				<div className="rounded-xl border border-[var(--border-color)] bg-[var(--bg-tertiary)]/60 p-3 flex items-center gap-2.5">
+					<Target className="h-5 w-5 text-[var(--brand-primary)] shrink-0" />
 					<div>
-						<p className="text-[10px] text-[var(--text-muted)] font-medium">
+						<p className="text-xs text-[var(--text-muted)] font-medium">
 							Key Focus
 						</p>
-						<p className="text-xs font-semibold text-[var(--text-primary)] truncate">
+						<p className="text-sm font-semibold text-[var(--text-primary)] truncate">
 							Roadmap & Execution
 						</p>
 					</div>
@@ -98,9 +101,9 @@ export function OverviewCard({ summary }: OverviewCardProps) {
 			</div>
 
 			{/* Metadata footer */}
-			<div className="flex items-center justify-between border-t border-[var(--border-color)]/60 pt-3 text-[11px] text-[var(--text-muted)]">
+			<div className="flex items-center justify-between border-t border-[var(--border-color)] pt-3 text-xs text-[var(--text-muted)]">
 				<span>Created {formatDate(summary.created_at)}</span>
-				<span className="font-mono text-[10px] bg-[var(--bg-tertiary)] px-2 py-0.5 rounded-md">
+				<span className="font-mono text-xs bg-[var(--bg-tertiary)] px-2 py-0.5 rounded-full">
 					Engine: {summary.generated_by}
 				</span>
 			</div>

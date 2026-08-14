@@ -21,14 +21,14 @@ export function NotesList({ bulletNotesJson }: NotesListProps) {
 
 	if (notes.length === 0) {
 		return (
-			<div className="rounded-2xl border border-dashed border-[var(--border-color)] bg-[var(--bg-secondary)]/50 p-6 text-center text-xs text-[var(--text-muted)]">
+			<div className="rounded-2xl border border-dashed border-[var(--border-color)] bg-[var(--bg-secondary)]/50 p-8 text-center text-sm text-[var(--text-muted)]">
 				No bullet notes available for this meeting.
 			</div>
 		);
 	}
 
 	return (
-		<div className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-xs">
+		<div className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-sm">
 			<div className="flex items-center gap-2 mb-4">
 				<ListChecks className="h-4 w-4 text-[var(--brand-primary)]" />
 				<h4 className="text-sm font-semibold text-[var(--text-primary)]">
@@ -40,7 +40,7 @@ export function NotesList({ bulletNotesJson }: NotesListProps) {
 				{notes.map((note, index) => (
 					<li
 						key={index}
-						className="flex items-start gap-2.5 text-xs text-[var(--text-secondary)] leading-relaxed"
+						className="flex items-start gap-2.5 text-sm text-[var(--text-secondary)] leading-relaxed"
 					>
 						<CheckCircle2 className="h-3.5 w-3.5 text-[var(--brand-primary)] shrink-0 mt-0.5" />
 						<span>{note}</span>

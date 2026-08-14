@@ -61,7 +61,7 @@ export function ActionItemList({
 	const completedCount = items.filter((i) => i.is_completed).length;
 
 	return (
-		<div className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-xs">
+		<div className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-sm">
 			{/* Header with Title and Add Button */}
 			<div className="flex items-center justify-between border-b border-[var(--border-color)]/60 pb-4">
 				<div className="flex items-center gap-2">
@@ -77,7 +77,7 @@ export function ActionItemList({
 						setEditingItem(null);
 						setModalOpen(true);
 					}}
-					className="flex items-center gap-1.5 rounded-xl bg-[var(--brand-primary)] px-3 py-1.5 text-xs font-medium text-white shadow-xs hover:bg-[var(--brand-primary-dark)] transition-colors"
+					className="btn-primary text-xs py-1.5 px-3"
 				>
 					<Plus className="h-3.5 w-3.5" />
 					Add Task
@@ -86,7 +86,7 @@ export function ActionItemList({
 
 			{/* Filter tabs */}
 			{items.length > 0 && (
-				<div className="mt-3 flex items-center gap-1 border-b border-[var(--border-color)]/40 pb-3 text-xs">
+				<div className="mt-3 flex items-center gap-1 border-b border-[var(--border-color)]/40 pb-3 text-sm">
 					<Filter className="h-3 w-3 text-[var(--text-muted)] mr-1" />
 					<button
 						onClick={() => setFilter('all')}
@@ -124,7 +124,7 @@ export function ActionItemList({
 			{/* List of items */}
 			<div className="mt-3 space-y-2">
 				{filteredItems.length === 0 ? (
-					<div className="py-6 text-center text-xs text-[var(--text-muted)]">
+					<div className="py-6 text-center text-sm text-[var(--text-muted)]">
 						{items.length === 0
 							? 'No action items extracted from this meeting yet.'
 							: 'No action items match the selected filter.'}
