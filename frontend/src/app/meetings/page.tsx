@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Video, Sparkles } from 'lucide-react';
+import { Plus, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { fetchMeetings, fetchTags, deleteMeeting } from '@/lib/api';
 import { useDebounce } from '@/lib/hooks/useDebounce';
@@ -92,25 +92,36 @@ export default function MeetingsPage() {
 		setPage(1);
 	};
 
+	const totalMeetings = meetingsData?.total || 0;
+
 	return (
-		<div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6 animate-in fade-in duration-200">
+		<div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:px-10 space-y-6 animate-fade-in-up">
 			{/* Page Header */}
-			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+			<div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
 				<div>
 					<h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">
 						Meetings Library
 					</h1>
-					<p className="mt-1 text-xs text-[var(--text-secondary)]">
-						Browse past conversations, smart transcripts, AI summaries, and
-						action items
+					<p className="mt-1.5 text-sm text-[var(--text-secondary)]">
+						{totalMeetings > 0 ? (
+							<>
+								<span className="font-semibold text-[var(--brand-primary)]">
+									{totalMeetings}
+								</span>{' '}
+								meeting{totalMeetings !== 1 ? 's' : ''} with AI transcripts
+								and summaries
+							</>
+						) : (
+							'Browse past conversations, smart transcripts, AI summaries, and action items'
+						)}
 					</p>
 				</div>
 
-				{/* Create Meeting CTA */}
+				{/* Create Meeting CTA — pill button with gradient */}
 				<button
 					type="button"
 					onClick={() => setCreateModalOpen(true)}
-					className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--brand-primary)] px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-[var(--brand-primary-dark)] hover:scale-105 active:scale-95 transition-all"
+					className="btn-primary text-sm"
 				>
 					<Plus className="h-4 w-4" />
 					New Meeting

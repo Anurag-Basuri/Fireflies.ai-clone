@@ -41,10 +41,10 @@ export function MeetingList({
 	const [viewMode, setViewMode] = React.useState<'grid' | 'list'>('grid');
 
 	return (
-		<div className="space-y-4">
+		<div className="space-y-5">
 			{/* Top control bar: count and view mode toggle */}
-			<div className="flex items-center justify-between text-xs text-[var(--text-secondary)]">
-				<span className="font-medium">
+			<div className="flex items-center justify-between text-sm text-[var(--text-secondary)]">
+				<span>
 					Showing{' '}
 					<span className="font-semibold text-[var(--text-primary)]">
 						{meetings.length}
@@ -56,12 +56,12 @@ export function MeetingList({
 					meetings
 				</span>
 
-				<div className="flex items-center gap-1 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] p-1">
+				<div className="flex items-center gap-1 rounded-full border border-[var(--border-color)] bg-[var(--bg-card)] p-1 shadow-sm">
 					<button
 						onClick={() => setViewMode('grid')}
-						className={`rounded-lg p-1.5 transition-colors ${
+						className={`rounded-full p-2 transition-all ${
 							viewMode === 'grid'
-								? 'bg-[var(--brand-primary)] text-white'
+								? 'bg-[var(--brand-primary)] text-white shadow-sm'
 								: 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
 						}`}
 						title="Grid View"
@@ -70,9 +70,9 @@ export function MeetingList({
 					</button>
 					<button
 						onClick={() => setViewMode('list')}
-						className={`rounded-lg p-1.5 transition-colors ${
+						className={`rounded-full p-2 transition-all ${
 							viewMode === 'list'
-								? 'bg-[var(--brand-primary)] text-white'
+								? 'bg-[var(--brand-primary)] text-white shadow-sm'
 								: 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
 						}`}
 						title="List View"
@@ -87,7 +87,7 @@ export function MeetingList({
 				<div
 					className={
 						viewMode === 'grid'
-							? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'
+							? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5'
 							: 'space-y-3'
 					}
 				>
@@ -103,7 +103,7 @@ export function MeetingList({
 					action={
 						<button
 							onClick={onCreateClick}
-							className="inline-flex items-center gap-2 rounded-xl bg-[var(--brand-primary)] px-4 py-2 text-xs font-medium text-white shadow-xs hover:bg-[var(--brand-primary-dark)] transition-colors"
+							className="btn-primary"
 						>
 							<Plus className="h-4 w-4" />
 							Create Meeting
@@ -115,7 +115,7 @@ export function MeetingList({
 				<div
 					className={
 						viewMode === 'grid'
-							? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'
+							? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5'
 							: 'grid grid-cols-1 gap-3'
 					}
 				>
@@ -131,8 +131,8 @@ export function MeetingList({
 
 			{/* Pagination footer */}
 			{totalPages > 1 && (
-				<div className="flex items-center justify-between border-t border-[var(--border-color)]/60 pt-4">
-					<p className="text-xs text-[var(--text-muted)]">
+				<div className="flex items-center justify-between border-t border-[var(--border-color)] pt-5">
+					<p className="text-sm text-[var(--text-muted)]">
 						Page{' '}
 						<span className="font-semibold text-[var(--text-primary)]">
 							{page}
@@ -147,18 +147,18 @@ export function MeetingList({
 						<button
 							onClick={() => onPageChange(page - 1)}
 							disabled={page <= 1}
-							className="flex items-center gap-1 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] disabled:opacity-40 transition-colors"
+							className="btn-secondary text-sm disabled:opacity-40"
 						>
-							<ChevronLeft className="h-3.5 w-3.5" />
+							<ChevronLeft className="h-4 w-4" />
 							Previous
 						</button>
 						<button
 							onClick={() => onPageChange(page + 1)}
 							disabled={page >= totalPages}
-							className="flex items-center gap-1 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] disabled:opacity-40 transition-colors"
+							className="btn-secondary text-sm disabled:opacity-40"
 						>
 							Next
-							<ChevronRight className="h-3.5 w-3.5" />
+							<ChevronRight className="h-4 w-4" />
 						</button>
 					</div>
 				</div>
