@@ -1,53 +1,67 @@
 @import 'tailwindcss';
 
 :root {
-	--brand-primary: #5b4dfb;
-	--brand-primary-light: #7c65ff;
-	--brand-primary-dark: #4738e0;
-	--brand-accent: #8b5cf6;
-	--brand-gradient: linear-gradient(135deg, #5b4dfb 0%, #8b5cf6 100%);
+	/* Fireflies brand purple palette */
+	--brand-primary: #6c4cf4;
+	--brand-primary-light: #8b6ff7;
+	--brand-primary-dark: #5a3fe0;
+	--brand-accent: #a78bfa;
+	--brand-gradient: linear-gradient(135deg, #6c4cf4 0%, #a78bfa 100%);
+	--brand-gradient-vivid: linear-gradient(135deg, #6c4cf4 0%, #8b5cf6 50%, #c084fc 100%);
 
+	/* Light mode — lavender tinted, NOT plain white */
 	--bg-primary: #ffffff;
-	--bg-secondary: #f8f9fd;
-	--bg-tertiary: #f0f2f9;
+	--bg-secondary: #f7f5ff;
+	--bg-tertiary: #eee9ff;
 	--bg-card: #ffffff;
-	--bg-sidebar: #0f0d26;
+	--bg-sidebar: #1a0a3e;
+	--bg-hover: #f0ecff;
 
-	--text-primary: #111827;
-	--text-secondary: #4b5563;
-	--text-muted: #9ca3af;
+	/* Text — warm grays */
+	--text-primary: #1a1a2e;
+	--text-secondary: #555770;
+	--text-muted: #8e90a6;
 
-	--border-color: #e5e7eb;
-	--border-hover: #d1d5db;
+	/* Borders — soft lavender tint */
+	--border-color: #e4dff5;
+	--border-hover: #d1c9ea;
 
+	/* Semantic colors */
 	--success: #10b981;
 	--warning: #f59e0b;
 	--error: #ef4444;
 
+	/* Radii */
 	--radius: 0.75rem;
 	--radius-lg: 1rem;
-	--radius-xl: 1.25rem;
+	--radius-xl: 1.5rem;
+	--radius-full: 9999px;
 }
 
 .dark {
-	--brand-primary: #6e62ff;
-	--brand-primary-light: #8a7eff;
-	--brand-primary-dark: #584bf5;
-	--brand-accent: #a78bfa;
-	--brand-gradient: linear-gradient(135deg, #6e62ff 0%, #a78bfa 100%);
+	--brand-primary: #7c5cf9;
+	--brand-primary-light: #9b7ffc;
+	--brand-primary-dark: #6647e8;
+	--brand-accent: #b49bff;
+	--brand-gradient: linear-gradient(135deg, #7c5cf9 0%, #b49bff 100%);
+	--brand-gradient-vivid: linear-gradient(135deg, #7c5cf9 0%, #9b7ffc 50%, #c9b3ff 100%);
 
-	--bg-primary: #0e0d1f;
-	--bg-secondary: #14122b;
-	--bg-tertiary: #1f1b40;
-	--bg-card: #161430;
-	--bg-sidebar: #0a0817;
+	/* Dark mode — deep navy/purple */
+	--bg-primary: #0d0b1a;
+	--bg-secondary: #13102a;
+	--bg-tertiary: #1e1940;
+	--bg-card: #171333;
+	--bg-sidebar: #08061a;
+	--bg-hover: #231e4a;
 
-	--text-primary: #f9fafb;
-	--text-secondary: #9ca3af;
-	--text-muted: #6b7280;
+	/* Text — cool whites */
+	--text-primary: #f0eeff;
+	--text-secondary: #a09cc0;
+	--text-muted: #6e6a8e;
 
+	/* Borders — translucent */
 	--border-color: rgba(255, 255, 255, 0.08);
-	--border-hover: rgba(255, 255, 255, 0.16);
+	--border-hover: rgba(255, 255, 255, 0.15);
 }
 
 * {
@@ -68,12 +82,14 @@ body {
 	color: var(--text-primary);
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	font-size: 14px;
+	line-height: 1.6;
 }
 
-/* Scrollbar styling */
+/* Scrollbar — thin purple accent */
 ::-webkit-scrollbar {
-	width: 5px;
-	height: 5px;
+	width: 6px;
+	height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -81,13 +97,13 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-	background: var(--text-muted);
-	border-radius: 4px;
-	opacity: 0.5;
+	background: var(--brand-primary);
+	border-radius: 6px;
+	opacity: 0.4;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: var(--text-secondary);
+	background: var(--brand-primary-light);
 }
 
 /* Active transcript line accent bar */
@@ -132,6 +148,22 @@ body {
 	border-radius: var(--radius);
 }
 
+/* Brand gradient animation */
+@keyframes gradientShift {
+	0%,
+	100% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+}
+
+.gradient-animate {
+	background-size: 200% 200%;
+	animation: gradientShift 3s ease infinite;
+}
+
 /* Media player seek bar styling */
 input[type='range'] {
 	-webkit-appearance: none;
@@ -141,29 +173,110 @@ input[type='range'] {
 }
 
 input[type='range']::-webkit-slider-runnable-track {
-	height: 4px;
-	border-radius: 2px;
+	height: 5px;
+	border-radius: 3px;
 	background: var(--border-color);
 }
 
 input[type='range']::-webkit-slider-thumb {
 	-webkit-appearance: none;
-	height: 14px;
-	width: 14px;
+	height: 16px;
+	width: 16px;
 	border-radius: 50%;
 	background: var(--brand-primary);
-	margin-top: -5px;
-	box-shadow: 0 0 8px rgba(91, 77, 251, 0.5);
+	margin-top: -5.5px;
+	box-shadow: 0 0 10px rgba(108, 76, 244, 0.5);
 	transition: transform 0.15s ease;
 }
 
 input[type='range']:hover::-webkit-slider-thumb {
-	transform: scale(1.2);
+	transform: scale(1.25);
 }
 
 /* Glass panel styling */
 .glass-panel {
 	background: color-mix(in srgb, var(--bg-card) 90%, transparent);
-	backdrop-filter: blur(12px);
+	backdrop-filter: blur(16px);
 	border: 1px solid var(--border-color);
+}
+
+/* Pill button base styles */
+.btn-primary {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	padding: 0.5rem 1.25rem;
+	border-radius: var(--radius-full);
+	background: var(--brand-gradient);
+	color: #ffffff;
+	font-weight: 600;
+	font-size: 0.8125rem;
+	border: none;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	box-shadow: 0 2px 8px rgba(108, 76, 244, 0.3);
+}
+
+.btn-primary:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 4px 16px rgba(108, 76, 244, 0.4);
+}
+
+.btn-primary:active {
+	transform: translateY(0);
+}
+
+.btn-secondary {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	padding: 0.5rem 1.25rem;
+	border-radius: var(--radius-full);
+	background: var(--bg-tertiary);
+	color: var(--text-primary);
+	font-weight: 500;
+	font-size: 0.8125rem;
+	border: 1px solid var(--border-color);
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+	border-color: var(--brand-primary);
+	color: var(--brand-primary);
+	background: color-mix(in srgb, var(--brand-primary) 8%, var(--bg-tertiary));
+}
+
+/* Subtle fade-in animation */
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-fade-in-up {
+	animation: fadeInUp 0.3s ease-out;
+}
+
+/* Tab underline animation */
+.tab-active-underline {
+	position: relative;
+}
+
+.tab-active-underline::after {
+	content: '';
+	position: absolute;
+	bottom: -1px;
+	left: 0;
+	right: 0;
+	height: 2px;
+	background: var(--brand-primary);
+	border-radius: 2px 2px 0 0;
 }
