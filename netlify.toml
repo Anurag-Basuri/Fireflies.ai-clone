@@ -1,0 +1,12 @@
+# Netlify build configuration for Next.js in a monorepo setup
+[build]
+  base = "frontend"
+  publish = ".next"
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NEXT_PUBLIC_API_BASE_URL = "http://localhost:8000/api/v1"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
