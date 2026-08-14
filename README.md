@@ -291,10 +291,40 @@ npx prettier --check .
 
 ---
 
-## 💡 Assumptions & Design Decisions
+## 💡 Assumptions Made During Development
 
-1. **Authentication**: In accordance with the assignment brief, a single default user (`Anurag Basuri`) is treated as logged in across the workspace.
-2. **Speech-to-Text**: Real-time live audio transcription is out of scope. Transcripts are seeded, uploaded, or pasted, and then parsed into diarized segments with timestamps.
-3. **AI Fallback Mechanism**: If no OpenAI or Anthropic API key is provided, the backend seamlessly falls back to a deterministic rule-based summarization engine that extracts overviews, bullet points, action items, and topic chapters. The platform is never broken or empty without an API key.
-4. **Media Playback**: Meetings reference bundled placeholder audio files (`/media/sample-meeting.mp3`) with valid audio headers for HTML5 playback, seeking, and bidirectional sync demonstration.
-5. **Database**: SQLite with persistent disk storage is utilized for ease of evaluation and deployment portability. In a multi-instance production environment, PostgreSQL and object storage (e.g. AWS S3) would be substituted.
+### 1. User Authentication and Identity Management
+In accordance with the assignment guidelines, full multi-user authentication (e.g., JWT, OAuth 2.0, session cookies) is considered out of scope. The application operates under the assumption of a single authenticated workspace user (`Anurag Basuri`, `User ID: 1`). All created meetings, uploaded transcripts, comments, and task modifications are automatically attributed to this default session. This architectural decision avoids unnecessary authentication boilerplate while maintaining a normalized database schema with foreign key relationships that can seamlessly accommodate a multi-tenant authentication provider in a future production release.
+
+### 2. Speech-to-Text (STT) and Transcript Ingestion
+Real-time audio transcription via automatic speech recognition (ASR) engines (e.g., Whisper, Deepgram) is treated as an external upstream service rather than an in-app feature. Instead, the platform focuses on post-meeting workflows by ingesting pre-transcribed text through structured file uploads (`.vtt`, `.json`, `.txt`), direct text pasting, or seeded database records. The backend parser extracts speaker diarization tokens, converts timestamp markers into floating-point seconds, and normalizes the spoken content into structured transcript segments.
+
+### 3. Media Playback and Audio Synchronization
+To demonstrate HTML5 media seeking and bidirectional timestamp synchronization without requiring multi-gigabyte media storage, the application links meetings to a lightweight placeholder audio file (`sample-meeting.mp3`) with valid headers. The custom media player and interactive transcript communicate through a centralized reactive state store, enabling real-time audio scrubbing, playback speed adjustments (0.5x to 2.0x), active speaker highlighting, and automatic transcript scrolling to the exact second of playback.
+
+### 4. Database Architecture and Single-Instance Deployment
+For portability, local reproducibility, and zero-configuration review, SQLite was chosen as the primary relational database, managed through SQLAlchemy 2.0 ORM and Alembic schema migrations. While SQLite with persistent disk storage is optimal for single-instance evaluation and lightweight hosting, the codebase adheres strictly to standard relational modeling practices (foreign keys, cascading deletes, unique constraints). In an enterprise horizontal-scaling environment, the database engine can be transitioned to PostgreSQL with object storage (AWS S3 or Cloudflare R2) simply by updating environment configurations.
+
+### 5. Dual-Engine AI Summaries and System Resilience
+The AI summarization pipeline is designed with a dual-engine architecture to ensure complete reliability during evaluation. When an OpenAI or Anthropic API key is provided, the system executes real LLM calls using structured JSON schema prompts to produce executive summaries, categorized discussion notes, actionable tasks, and chapter outlines. If an API key is absent, invalid, or rate-limited, the backend automatically transitions to a deterministic heuristic summarizer. This guarantees that the evaluation workflow remains 100% operational without failing or leaving the interface blank.
+
+### 6. Scope Boundaries and Integration Placeholders
+Per the assignment brief, complex real-time external services—such as an automated bot joining active Zoom/Google Meet calls, live CRM integrations (Salesforce, HubSpot), and real-time team collaboration sockets—are represented with sleek "Coming Soon" interface cards. This preserves the visual hierarchy and design density of the Fireflies.ai experience without introducing heavy external runtime dependencies.
+
+---
+
+## 🗂️ Mock and Seeded Dataset Overview
+
+### 1. Purpose and Methodology
+To ensure evaluators can immediately explore and test all features without manually uploading data, the database is pre-populated with **6 comprehensive, domain-diverse enterprise meeting datasets**. Each meeting contains realistic multi-speaker dialogues, complete speaker diarization, timestamps, AI executive overviews, categorized bullet points, interactive action items, and topic outlines.
+
+### 2. Breakdown of Seeded Meeting Datasets
+- **1. Q3 Product Strategy & Roadmap Planning**: A 45-minute cross-functional quarterly planning session focusing on AI search prioritization, mobile app redesign benchmarks, and enterprise dashboard beta timelines.
+- **2. Enterprise Sales Discovery — Acme Corp**: A high-stakes enterprise sales call addressing documentation bottlenecks for 2,400 employees, custom data retention policies, SOC 2 compliance, and Okta SSO integration.
+- **3. Engineering Sprint 42 Retrospective**: A technical team retrospective evaluating sprint velocity (34/38 points completed), celebrating notification architecture overhaul wins, and addressing CI/CD test flakiness.
+- **4. Customer Success QBR — TechVentures Inc**: A Quarterly Business Review analyzing 94% weekly active user adoption, finalizing a 3-year enterprise contract renewal, and planning European and Asian team rollouts.
+- **5. 1-on-1: Career Development & Performance Review**: A mentorship and performance conversation reviewing the Staff Engineer competency rubric, distributed architecture leadership, and technical conference speaking goals.
+- **6. Security & Compliance Architecture Review**: An audit preparation meeting addressing SOC 2 Type II remediation items, API gateway token bucket rate limiting, and third-party penetration testing schedules.
+
+### 3. Interactive Testing Presets
+In addition to the database seed, the frontend **New Meeting Modal** includes 1-click **Demo Presets**. Evaluators can click any pre-configured template (such as *Client Discovery* or *Sprint Retrospective*) to instantly create a new meeting, trigger the transcript parser, execute the AI summary pipeline, and view the results in real time.
