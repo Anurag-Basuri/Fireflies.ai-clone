@@ -2,6 +2,7 @@ import json
 import re
 from typing import Optional
 from collections import Counter
+import openai
 
 from app.core.config import settings
 from app.core.logging import logger
@@ -52,29 +53,49 @@ USER QUESTION: {question}
 Provide a clear, concise answer based only on the meeting content. If the answer cannot be determined from the meeting content, say so."""
 
 
+# Helper to get the configured Google Gemini API client and model
+def _get_gemini_client():
+    client = openai.OpenAI(
+        api_key=settings.gemini_api_key,
+        base_url=settings.llm_base_url or "https://generativelanguage.googleapis.com/v1beta/openai/",
+    )
+    model = settings.llm_model or "gemini-flash-latest"
+    return client, model
+
+
+# Call Google Gemini to generate a structured meeting summary
 def generate_summary_with_llm(transcript_text: str) -> Optional[dict]:
-    # Call the configured LLM provider to generate a structured summary
+    if not settings.gemini_api_key:
+        logger.info("No Gemini API key configured, using fallback summary")
+        return None
+
     prompt = SUMMARY_PROMPT.format(transcript_text=transcript_text[:15000])
 
     try:
-        if settings.llm_provider == "openai" and settings.openai_api_key:
-            return _call_openai(prompt)
-        elif settings.llm_provider == "anthropic" and settings.anthropic_api_key:
-            return _call_anthropic(prompt)
-        else:
-            logger.info("No LLM API key configured, using fallback summary")
-            return None
+        client, model = _get_gemini_client()
+        response = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.3,
+            max_tokens=2000,
+            timeout=30,
+        )
+        content = response.choices[0].message.content
+        return _parse_llm_json(content)
     except Exception as e:
-        logger.error(f"LLM summary generation failed: {e}")
+        logger.error(f"Gemini summary generation failed: {e}")
         return None
 
 
+# Send a meeting-scoped Q&A question to Google Gemini
 def ask_meeting_question(
     question: str,
     transcript_text: str,
     summary_text: str,
 ) -> Optional[str]:
-    # Send a meeting-scoped Q&A question to the LLM
+    if not settings.gemini_api_key:
+        return "I'm sorry, the AI assistant is not configured. Please add a Gemini API key to enable this feature."
+
     prompt = ASK_PROMPT.format(
         summary=summary_text,
         transcript_text=transcript_text[:10000],
@@ -82,21 +103,22 @@ def ask_meeting_question(
     )
 
     try:
-        if settings.llm_provider == "openai" and settings.openai_api_key:
-            result = _call_openai_text(prompt)
-            return result
-        elif settings.llm_provider == "anthropic" and settings.anthropic_api_key:
-            result = _call_anthropic_text(prompt)
-            return result
-        else:
-            return "I'm sorry, the AI assistant is not configured. Please add an LLM API key to enable this feature."
+        client, model = _get_gemini_client()
+        response = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.5,
+            max_tokens=1000,
+            timeout=30,
+        )
+        return response.choices[0].message.content
     except Exception as e:
-        logger.error(f"Ask AI failed: {e}")
+        logger.error(f"Gemini Ask AI failed: {e}")
         return "I encountered an error processing your question. Please try again."
 
 
+# Rule-based fallback when the LLM is unavailable or fails
 def generate_fallback_summary(transcript_text: str) -> dict:
-    # Rule-based fallback when the LLM is unavailable or fails
     lines = transcript_text.strip().split("\n")
     lines = [l.strip() for l in lines if l.strip()]
 
@@ -154,82 +176,8 @@ def generate_fallback_summary(transcript_text: str) -> dict:
     }
 
 
-def _call_openai(prompt: str) -> Optional[dict]:
-    # Make an OpenAI API call and parse the JSON response
-    import openai
-
-    model = settings.llm_model
-    if not model or model.startswith("claude"):
-        model = "gpt-4o-mini"
-
-    client = openai.OpenAI(api_key=settings.openai_api_key)
-    response = client.chat.completions.create(
-        model=model,
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.3,
-        max_tokens=2000,
-        timeout=30,
-    )
-    content = response.choices[0].message.content
-    return _parse_llm_json(content)
-
-
-def _call_anthropic(prompt: str) -> Optional[dict]:
-    # Make an Anthropic API call and parse the JSON response
-    import anthropic
-
-    model = settings.llm_model
-    if not model or model.startswith("gpt"):
-        model = "claude-3-5-sonnet-20241022"
-
-    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
-    response = client.messages.create(
-        model=model,
-        max_tokens=2000,
-        messages=[{"role": "user", "content": prompt}],
-    )
-    content = response.content[0].text
-    return _parse_llm_json(content)
-
-
-def _call_openai_text(prompt: str) -> str:
-    # Make an OpenAI API call returning raw text
-    import openai
-
-    model = settings.llm_model
-    if not model or model.startswith("claude"):
-        model = "gpt-4o-mini"
-
-    client = openai.OpenAI(api_key=settings.openai_api_key)
-    response = client.chat.completions.create(
-        model=model,
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.5,
-        max_tokens=1000,
-        timeout=30,
-    )
-    return response.choices[0].message.content
-
-
-def _call_anthropic_text(prompt: str) -> str:
-    # Make an Anthropic API call returning raw text
-    import anthropic
-
-    model = settings.llm_model
-    if not model or model.startswith("gpt"):
-        model = "claude-3-5-sonnet-20241022"
-
-    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
-    response = client.messages.create(
-        model=model,
-        max_tokens=1000,
-        messages=[{"role": "user", "content": prompt}],
-    )
-    return response.content[0].text
-
-
+# Extract and parse JSON from LLM response, handling markdown fences
 def _parse_llm_json(content: str) -> Optional[dict]:
-    # Extract and parse JSON from LLM response, handling markdown fences
     if not content:
         return None
 

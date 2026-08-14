@@ -6,11 +6,11 @@ class Settings(BaseSettings):
     # Database
     database_url: str = "sqlite:///./fireflies.db"
 
-    # LLM Configuration
-    llm_provider: str = "openai"
-    openai_api_key: Optional[str] = None
-    anthropic_api_key: Optional[str] = None
-    llm_model: str = "gpt-4o-mini"
+    # LLM Configuration (Google Gemini)
+    llm_provider: str = "gemini"
+    gemini_api_key: Optional[str] = None
+    llm_model: str = "gemini-flash-latest"
+    llm_base_url: Optional[str] = "https://generativelanguage.googleapis.com/v1beta/openai/"
 
     # CORS
     cors_origins: str = "http://localhost:3000"
